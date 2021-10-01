@@ -514,7 +514,7 @@ class Imagine(nn.Module):
                 out, loss = self.model(self.clip_encoding)
             loss = loss / self.gradient_accumulate_every
             total_loss += loss
-            accelerator.backward(scaler.scale(loss))    
+            Accelerator.backward(scaler.scale(loss))    
         out = out.cpu().float().clamp(0., 1.)
         self.scaler.step(self.optimizer)
         self.scaler.update()
