@@ -22,6 +22,8 @@ from tqdm import trange, tqdm
 
 from clip import load, tokenize
 
+from accelerate import Accelerator
+
 import torch_xla
 import torch_xla.core.xla_model as xm
 
@@ -512,7 +514,7 @@ class Imagine(nn.Module):
                 out, loss = self.model(self.clip_encoding)
             loss = loss / self.gradient_accumulate_every
             total_loss += loss
-            self.scaler.scale(loss).backward()    
+            accelerator.backward(scaler.scale(loss))    
         out = out.cpu().float().clamp(0., 1.)
         self.scaler.step(self.optimizer)
         self.scaler.update()
