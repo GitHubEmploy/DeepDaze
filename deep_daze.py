@@ -4,7 +4,7 @@ import sys
 import random
 from datetime import datetime
 from pathlib import Path
-
+import torch.optim as optim
 import torch
 import torch.nn.functional as F
 from siren_pytorch import SirenNet, SirenWrapper
