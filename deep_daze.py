@@ -27,9 +27,10 @@ from accelerate import Accelerator
 import torch_xla
 import torch_xla.core.xla_model as xm
 
-second_dev = xm.xla_device(n=2, devkind='TPU')
-t2 = torch.zeros(3, 3, device = second_dev)
-print(t2)
+device = xm.xla_device()
+#model = MNIST().train().to(device)
+#loss_fn = nn.NLLLoss()
+#optimizer = optim.SGD(model.parameters(), lr=lr, momentum=momentum)
 
 
 # Helpers
@@ -386,12 +387,7 @@ class Imagine(nn.Module):
         self.model = model
         self.scaler = GradScaler()
         siren_params = model.model.parameters()
-        if optimizer == "AdamP":
-            self.optimizer = AdamP(siren_params, lr)
-        elif optimizer == "Adam":
-            self.optimizer = torch.optim.Adam(siren_params, lr)
-        elif optimizer == "DiffGrad":
-            self.optimizer = DiffGrad(siren_params, lr)
+        self.optimizer = optim.SGD(siren_params, lr=lr).zero_grad()
         self.gradient_accumulate_every = gradient_accumulate_every
         self.save_every = save_every
         self.save_date_time = save_date_time
