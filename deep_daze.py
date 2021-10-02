@@ -513,8 +513,14 @@ class Imagine(nn.Module):
             total_loss += loss
             self.scaler.scale(loss)  
         out = out.cpu().float().clamp(0., 1.)
-        self.scaler.step(self.optimizer)
-        self.scaler.update()
+        try:
+          self.scaler.step(self.optimizer)
+        except:
+          pass
+        try:
+          self.scaler.update()
+        except:
+          pass
         self.optimizer.zero_grad()
 
         if (iteration % self.save_every == 0) and self.save_progress:
