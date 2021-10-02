@@ -346,7 +346,8 @@ class Imagine(nn.Module):
             jit = False
 
         # Load CLIP
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = xm.xla_device(n=2, devkind='TPU')
+        torch.zeros(3, 3, device = self.device)
         clip_perceptor, norm = load(model_name, jit=jit, device=self.device)
         self.perceptor = clip_perceptor.eval()
         for param in self.perceptor.parameters():
@@ -514,7 +515,7 @@ class Imagine(nn.Module):
                 out, loss = self.model(self.clip_encoding)
             loss = loss / self.gradient_accumulate_every
             total_loss += loss
-            Accelerator.backward(self.scaler.scale(loss))    
+            self.scaler.scale(loss)  
         out = out.cpu().float().clamp(0., 1.)
         self.scaler.step(self.optimizer)
         self.scaler.update()
