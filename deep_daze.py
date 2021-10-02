@@ -387,7 +387,7 @@ class Imagine(nn.Module):
         self.model = model
         self.scaler = GradScaler()
         siren_params = model.model.parameters()
-        self.optimizer = optim.SGD(siren_params, lr=lr).zero_grad()
+        self.optimizer = optim.SGD(siren_params, lr=lr)
         self.gradient_accumulate_every = gradient_accumulate_every
         self.save_every = save_every
         self.save_date_time = save_date_time
